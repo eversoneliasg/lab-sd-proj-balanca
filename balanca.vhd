@@ -21,86 +21,144 @@ use ieee.std_logic_1164.all;
 
 entity balanca is
     port (
-        CLOCK   : in    std_logic; -- clock input
-        S       : in    std_logic; -- control input
-        A,B,C,D : in    std_logic; -- data inputs
-        Q       : out   std_logic  -- data output
+        clock         : in  std_logic;
+        comando 		 : in  std_logic;
+		  aplicar_multa : in  std_logic;
+        A,B,C,D       : in  std_logic;
+        Q             : out std_logic 
     );
 end balanca;
 
 architecture arch of balanca is
 
+	type state_type is (
+		ENTRADA, 
+		POSICIONAMENTO, 
+		PESAGEM, 
+		CALCULO_NORMATIVO, 
+		CALCULO_MULTA, 
+		EMISSAO_DOCUMENTO, 
+		SAIDA,
+		REINICIALIZACAO
+	);
 
-	type state_type is (s0, s1, s2, s3);
+	signal state 			: state_type;
+	signal new_state		: state_type;
+	signal botao 			: boolean;
 
-
-	signal state : state_type;
-	signal new_state: state_type;
-	signal botao : boolean;
 begin
 
-process(CLOCK,S)
+process(clock,comando)
 	begin
 	if (state /= new_state) then
 		botao <= false;
 	end if;
-	if (CLOCK'EVENT and CLOCK = '1') then
+	if (clock'EVENT and clock = '1') then
 		state <= new_state;
 	end if;
-	if (S = '0') then 
+	if (comando = '0') then 
 	 botao <= true;
 	end if;
 end process;
   
-  process(S,state)
+process(comando,state)
   begin
 
-			case state is
-				when s0=>
-					if S = '1' and botao = true then
-						new_state <= s1;
+		case state is
+			when ENTRADA =>
+				if comando = '1' and botao = true then
+					new_state <= POSICIONAMENTO;
+				else
+					new_state <= ENTRADA;
+				end if;
+
+			when POSICIONAMENTO =>
+				if comando = '1' and botao = true then
+					new_state <= PESAGEM;
+				else
+					new_state <= POSICIONAMENTO;
+				end if;
+
+			when PESAGEM =>
+				if comando = '1' and botao = true then
+					new_state <= CALCULO_NORMATIVO;
+				else
+					new_state <= PESAGEM;
+				end if;
+
+			when CALCULO_NORMATIVO =>
+				if comando = '1' and botao = true then
+					if aplicar_multa = '0' then
+						new_state <= SAIDA;
 					else
-						new_state <= s0;
+						new_state <= CALCULO_MULTA;
 					end if;
+				else
+					new_state <= CALCULO_NORMATIVO;
+				end if;
 
-				when s1=>
-					if S= '1' and botao = true then
-						new_state <= s2;
-					else
-						new_state <= s1;
-					end if;
+			when CALCULO_MULTA =>
+				if comando = '1' and botao = true then
+					new_state <= EMISSAO_DOCUMENTO;
+				else
+					new_state <= CALCULO_MULTA;
+				end if;
 
-				when s2=>
-					if S= '1' and botao = true then
-						new_state <= s3;
-					else
-						new_state <= s2;
-					end if;
+			when EMISSAO_DOCUMENTO =>
+				if comando = '1' and botao = true then
+					new_state <= SAIDA;
+				else
+					new_state <= EMISSAO_DOCUMENTO;
+				end if;
 
-				when s3=>
-					if S= '1' and botao = true then
-						new_state <= s0;
-					else
+			when SAIDA =>
+				if comando = '1' and botao = true then
+					new_state <= REINICIALIZACAO;
+				else
+					new_state <= SAIDA;
+				end if;
 
-						new_state <= s3;
-					end if;
+			when REINICIALIZACAO =>
+				if comando = '1' and botao = true then
+					new_state <= ENTRADA;
+				else
+					new_state <= REINICIALIZACAO;
+				end if;
 
-			end case;
+		end case;
+	
+end process;
+  
+  
+process(state, A,B,C,D)
+  begin
+		case state is
 		
-  end process;
-  
-  
-  process(state, A,B,C,D)
-  begin
-			case state is
-				when s0=>
-						Q <= A;
-				when s1=>
-						Q <= B;
-				when s2=>
-						Q <= C;
-				when s3=>
-						Q <= D;
-			end case;
-  end process;
+			when ENTRADA =>
+				-- Processo ENTRADA
+
+			when POSICIONAMENTO =>
+				-- Processo POSICIONAMENTO
+
+			when PESAGEM =>
+				-- Processo PESAGEM
+
+			when CALCULO_NORMATIVO =>
+				-- Processo CALCULO_NORMATIVO
+
+			when CALCULO_MULTA =>
+				-- Processo CALCULO_MULTA
+
+			when EMISSAO_DOCUMENTO =>
+				-- Processo EMISSAO_DOCUMENTO
+
+			when SAIDA =>
+				-- Processo SAIDA
+
+			when REINICIALIZACAO =>
+				-- Processo REINICIALIZACAO
+
+		end case;
+end process;
+
 end arch;
