@@ -20,12 +20,29 @@ use ieee.std_logic_1164.all;
 
 
 entity balanca is
+    generic (
+        W_16 :	integer := 16;
+        W_32 :	integer := 32;
+        W_64 :	integer := 64
+    );
     port (
         clock         : in  std_logic;
         comando 		 : in  std_logic;
 		  aplicar_multa : in  std_logic;
-        A,B,C,D       : in  std_logic;
-        Q             : out std_logic 
+
+        id   				 : in    std_logic_vector(W_32 - 1 downto 0);
+        peso   			 : in    std_logic_vector(W_16 - 1 downto 0);
+        peso_permitido   : in    std_logic_vector(W_16 - 1 downto 0);
+        abertura_fechamento_cancela_1 : in  std_logic;
+        abertura_fechamento_cancela_2 : in  std_logic;
+
+        valor_multa      : out   std_logic_vector(W_32 - 1 downto 0);
+        numero_controle  : out   std_logic_vector(W_64 - 1 downto 0);
+        semaforo_1 		 : out std_logic;
+        semaforo_2 		 : out std_logic;
+        cancela_1  		 : out std_logic;
+        cancela_2  		 : out std_logic
+
     );
 end balanca;
 
@@ -130,7 +147,7 @@ process(comando,state)
 end process;
   
   
-process(state, A,B,C,D)
+process(state)
   begin
 		case state is
 		
