@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use IEEE.std_logic_arith .all;
 
 entity balanca is
     generic (
@@ -10,16 +11,17 @@ entity balanca is
     port (
         clock         : in  std_logic;
         comando 		 : in  std_logic;
-		  aplicar_multa : out  std_logic;
 
         id   				 : in    std_logic_vector(W_32 - 1 downto 0);
         peso   			 : in    std_logic_vector(W_16 - 1 downto 0);
         peso_permitido   : in    std_logic_vector(W_16 - 1 downto 0);
+		  valor_por_kg_excedente  : in std_logic_vector(W_16 - 1 downto 0);
+		  
         abertura_fechamento_cancela_1 : in  std_logic;
         abertura_fechamento_cancela_2 : in  std_logic;
 
-        valor_multa      : out   std_logic_vector(W_32 - 1 downto 0);
-        numero_controle  : out   std_logic_vector(W_64 - 1 downto 0);
+        valor_multa      : out std_logic_vector(W_32 - 1 downto 0);
+        numero_controle  : out std_logic_vector(W_64 - 1 downto 0);
         semaforo_1 		 : out std_logic;
         semaforo_2 		 : out std_logic;
         cancela_1  		 : out std_logic;
@@ -41,30 +43,63 @@ architecture arch of balanca is
 		REINICIALIZACAO
 	);
 	
-	component comparator is
+	component comparador is
 	port (
-      CLK: in std_logic; 
-      A,B: in std_logic_vector(7 downto 0); 
-      IAB: in std_logic;
-      Output: out std_logic
+      CLK    : in  std_logic; 
+      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+      Output : out std_logic
 	);
 	end component;
 	
+	component subtrator is
+	port (
+      CLK    : in  std_logic; 
+      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+      Output : out std_logic_vector(W_16 - 1  downto 0)
+	);
+	end component;
+	
+	component multiplicador is
+	port (
+      CLK    : in  std_logic; 
+      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+      Output : out std_logic_vector(W_16 - 1  downto 0)
+	);
+	end component;
+
 	signal state 			: state_type;
 	signal new_state		: state_type;
 	signal botao 			: boolean;
-	signal IAB : std_logic := '0';
-	signal tmp_aplicar_multa : std_logic;
+	signal aplicar_multa : std_logic;
+	signal tmp_peso_excedente : std_logic_vector(W_16 - 1  downto 0);
+	signal tmp_valor_multa    : std_logic_vector(W_16 - 1  downto 0);
+	
+	signal p1 : signed(W_16 - 1 downto 0);
+   signal p2 : signed(W_16 - 1 downto 0);
+   signal m  : signed(W_32 - 1 downto 0);
 
 	
 begin
   
-instancia_comparator: comparator port map(
+instancia_comparador: comparador port map(
 			CLK => CLOCK,
 			A => peso,
 			B => peso_permitido, 
-			IAB=>IAB,
 			Output => aplicar_multa
+	);
+	
+instancia_subtrator: subtrator port map (
+			CLK => CLOCK,
+			A   => peso,
+			B   => peso_permitido, 
+			Output => tmp_peso_excedente
+	);
+	
+instancia_multiplicador: multiplicador port map (
+			CLK => CLOCK,
+			A   => tmp_peso_excedente,
+			B   => valor_por_kg_excedente, 
+			Output => tmp_valor_multa
 	);
 
 process(clock,comando)
@@ -81,8 +116,7 @@ process(clock,comando)
 end process;
   
 process(comando,state)
-  begin
-
+	begin
 		case state is
 			when ENTRADA =>
 				if comando = '1' 
@@ -123,7 +157,7 @@ process(comando,state)
 					and abertura_fechamento_cancela_1 = '0' 
 					and abertura_fechamento_cancela_2 = '0' 
 				then
-					if tmp_aplicar_multa = '1' then
+					if aplicar_multa = '1' then
 						new_state <= SAIDA;
 					else
 						new_state <= CALCULO_MULTA;
@@ -175,16 +209,12 @@ process(comando,state)
 				else
 					new_state <= REINICIALIZACAO;
 				end if;
-
 		end case;
-	
 end process;
 
 process(state)
   begin
-  
   		case state is
-		
 			when ENTRADA =>
 				cancela_1  <= '1';
 				semaforo_1 <= '0';
@@ -214,6 +244,7 @@ process(state)
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
+				m <= p1 * p2;
 
 			when EMISSAO_DOCUMENTO =>
 				cancela_1  <= '0';
@@ -234,6 +265,8 @@ process(state)
 				semaforo_2 <= '1';
 
 		end case;
-end process;
+		
+		valor_multa   <= std_logic_vector(m);
 
+end process;
 end arch;
