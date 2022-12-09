@@ -45,7 +45,6 @@ architecture arch of balanca is
 	
 	component comparador is
 	port (
-      CLK    : in  std_logic; 
       A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
       Output : out std_logic
 	);
@@ -82,25 +81,24 @@ architecture arch of balanca is
 begin
   
 instancia_comparador: comparador port map(
-			CLK => CLOCK,
 			A => peso,
 			B => peso_permitido, 
 			Output => aplicar_multa
 	);
 	
-instancia_subtrator: subtrator port map (
-			CLK => CLOCK,
-			A   => peso,
-			B   => peso_permitido, 
-			Output => tmp_peso_excedente
-	);
-	
-instancia_multiplicador: multiplicador port map (
-			CLK => CLOCK,
-			A   => tmp_peso_excedente,
-			B   => valor_por_kg_excedente, 
-			Output => tmp_valor_multa
-	);
+-- instancia_subtrator: subtrator port map (
+-- 			CLK => CLOCK,
+-- 			A   => peso,
+-- 			B   => peso_permitido, 
+-- 			Output => tmp_peso_excedente
+-- 	);
+-- 	
+-- instancia_multiplicador: multiplicador port map (
+-- 			CLK => CLOCK,
+-- 			A   => tmp_peso_excedente,
+-- 			B   => valor_por_kg_excedente, 
+-- 			Output => tmp_valor_multa
+-- 	);
 
 process(clock,comando)
 	begin
