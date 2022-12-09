@@ -4,15 +4,13 @@ use IEEE.std_logic_arith .all;
 
 entity balanca is
     generic (
-        W_16 :	integer := 16;
-        W_32 :	integer := 32;
-        W_64 :	integer := 64
+        W_16 :	integer := 16
     );
     port (
         clock         : in  std_logic;
         comando 		 : in  std_logic;
 
-        id   				 : in    std_logic_vector(W_32 - 1 downto 0);
+        id   				 : in    std_logic_vector(2 * W_16 - 1 downto 0);
         peso   			 : in    std_logic_vector(W_16 - 1 downto 0);
         peso_permitido   : in    std_logic_vector(W_16 - 1 downto 0);
 		  valor_por_kg_excedente  : in std_logic_vector(W_16 - 1 downto 0);
@@ -20,8 +18,8 @@ entity balanca is
         abertura_fechamento_cancela_1 : in  std_logic;
         abertura_fechamento_cancela_2 : in  std_logic;
 
-        valor_multa      : out std_logic_vector(W_32 - 1 downto 0);
-        numero_controle  : out std_logic_vector(W_64 - 1 downto 0);
+        valor_multa      : out std_logic_vector(2 * W_16 - 1 downto 0);
+        numero_controle  : out std_logic_vector(4 * W_16 - 1 downto 0);
         semaforo_1 		 : out std_logic;
         semaforo_2 		 : out std_logic;
         cancela_1  		 : out std_logic;
@@ -52,17 +50,16 @@ architecture arch of balanca is
 	
 	component subtrator is
 	port (
-      CLK    : in  std_logic; 
       A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+		add_sub : in std_logic;
       Output : out std_logic_vector(W_16 - 1  downto 0)
 	);
 	end component;
 	
 	component multiplicador is
 	port (
-      CLK    : in  std_logic; 
       A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
-      Output : out std_logic_vector(W_16 - 1  downto 0)
+      Output : out std_logic_vector(2* W_16 - 1  downto 0)
 	);
 	end component;
 
@@ -71,11 +68,11 @@ architecture arch of balanca is
 	signal botao 			: boolean;
 	signal aplicar_multa : std_logic;
 	signal tmp_peso_excedente : std_logic_vector(W_16 - 1  downto 0);
-	signal tmp_valor_multa    : std_logic_vector(W_16 - 1  downto 0);
+	signal tmp_valor_multa    : std_logic_vector(2 * W_16 - 1  downto 0);
 	
 	signal p1 : signed(W_16 - 1 downto 0);
    signal p2 : signed(W_16 - 1 downto 0);
-   signal m  : signed(W_32 - 1 downto 0);
+   signal m  : signed(2 * W_16 - 1 downto 0);
 
 	
 begin
@@ -84,21 +81,20 @@ instancia_comparador: comparador port map(
 			A => peso,
 			B => peso_permitido, 
 			Output => aplicar_multa
-	);
+);
 	
--- instancia_subtrator: subtrator port map (
--- 			CLK => CLOCK,
--- 			A   => peso,
--- 			B   => peso_permitido, 
--- 			Output => tmp_peso_excedente
--- 	);
--- 	
--- instancia_multiplicador: multiplicador port map (
--- 			CLK => CLOCK,
--- 			A   => tmp_peso_excedente,
--- 			B   => valor_por_kg_excedente, 
--- 			Output => tmp_valor_multa
--- 	);
+instancia_subtrator: subtrator port map (
+			A   => peso,
+			B   => peso_permitido, 
+			add_sub => '0',
+			Output => tmp_peso_excedente
+);
+	
+instancia_multiplicador: multiplicador port map (
+			A   => tmp_peso_excedente,
+			B   => valor_por_kg_excedente, 
+			Output => tmp_valor_multa
+);
 
 process(clock,comando)
 	begin

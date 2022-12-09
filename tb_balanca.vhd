@@ -8,9 +8,7 @@ use IEEE.MATH_REAL.ALL;
 
 entity tb_balanca is
  generic (
-        W_16 :	integer := 16;
-        W_32 :	integer := 32;
-        W_64 :	integer := 64
+        W_16 :	integer := 16
     );
 end tb_balanca;
 
@@ -21,7 +19,7 @@ port (
         clock         : in  std_logic;
         comando 		 : in  std_logic;
 
-        id   				 : in    std_logic_vector(W_32 - 1 downto 0);
+        id   				 : in    std_logic_vector(2 * W_16 - 1 downto 0);
         peso   			 : in    std_logic_vector(W_16 - 1 downto 0);
         peso_permitido   : in    std_logic_vector(W_16 - 1 downto 0);
 		  valor_por_kg_excedente  : in std_logic_vector(W_16 - 1 downto 0);
@@ -29,8 +27,8 @@ port (
         abertura_fechamento_cancela_1 : in  std_logic;
         abertura_fechamento_cancela_2 : in  std_logic;
 
-        valor_multa      : out std_logic_vector(W_32 - 1 downto 0);
-        numero_controle  : out std_logic_vector(W_64 - 1 downto 0);
+        valor_multa      : out std_logic_vector(2 * W_16 - 1 downto 0);
+        numero_controle  : out std_logic_vector(4 * W_16 - 1 downto 0);
         semaforo_1 		 : out std_logic;
         semaforo_2 		 : out std_logic;
         cancela_1  		 : out std_logic;
@@ -42,14 +40,14 @@ end component;
 
 signal clk        : std_logic;
 signal comando		: std_logic;
-signal id   	 	: std_logic_vector(W_32 - 1 downto 0);
+signal id   	 	: std_logic_vector(2 * W_16 - 1 downto 0);
 signal peso   		: std_logic_vector(W_16 - 1 downto 0);
 signal peso_permitido : std_logic_vector(W_16 - 1 downto 0);
 signal valor_por_kg_excedente : std_logic_vector(W_16 - 1 downto 0);
 signal abertura_fechamento_cancela_1 : std_logic;
 signal abertura_fechamento_cancela_2 : std_logic;
-signal valor_multa      : std_logic_vector(W_32 - 1 downto 0);
-signal numero_controle  : std_logic_vector(W_64 - 1 downto 0);
+signal valor_multa      : std_logic_vector(2 * W_16 - 1 downto 0);
+signal numero_controle  : std_logic_vector(4 * W_16 - 1 downto 0);
 signal semaforo_1 		: std_logic;
 signal semaforo_2 		: std_logic;
 signal cancela_1  		: std_logic;
