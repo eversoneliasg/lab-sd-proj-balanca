@@ -22,7 +22,7 @@ entity balanca is
         semaforo_1 		 : out std_logic;
         semaforo_2 		 : out std_logic;
         cancela_1  		 : out std_logic;
-        cancela_2  		 : out std_logic;
+        cancela_2  		 : out std_logic
 
     );
 
@@ -70,9 +70,9 @@ architecture arch of balanca is
 	signal tmp_peso_excedente : unsigned(W_16 - 1  downto 0);
 	signal tmp_valor_multa    : unsigned(2 * W_16 - 1  downto 0);
 	
-	signal p1 : unsigned(W_16 - 1 downto 0);
-   signal p2 : unsigned(W_16 - 1 downto 0);
-   signal m  : unsigned(2 * W_16 - 1 downto 0);
+--	signal p1 : unsigned(W_16 - 1 downto 0);
+--   signal p2 : unsigned(W_16 - 1 downto 0);
+--   signal m  : unsigned(2 * W_16 - 1 downto 0);
 
 	
 begin
@@ -115,8 +115,8 @@ process(comando,state)
 			when ENTRADA =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '1' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '1' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= POSICIONAMENTO;
 				else
@@ -126,8 +126,8 @@ process(comando,state)
 			when POSICIONAMENTO =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '1' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '1' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= PESAGEM;
 				else
@@ -137,8 +137,8 @@ process(comando,state)
 			when PESAGEM =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= CALCULO_NORMATIVO;
 				else
@@ -148,10 +148,10 @@ process(comando,state)
 			when CALCULO_NORMATIVO =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
-					if aplicar_multa = '1' then
+					if aplicar_multa = '0' then
 						new_state <= SAIDA;
 					else
 						new_state <= CALCULO_MULTA;
@@ -163,8 +163,8 @@ process(comando,state)
 			when CALCULO_MULTA =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= EMISSAO_DOCUMENTO;
 				else
@@ -174,8 +174,8 @@ process(comando,state)
 			when EMISSAO_DOCUMENTO =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= SAIDA;
 				else
@@ -185,8 +185,8 @@ process(comando,state)
 			when SAIDA =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '1' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '1' 
 				then
 					new_state <= REINICIALIZACAO;
 				else
@@ -196,8 +196,8 @@ process(comando,state)
 			when REINICIALIZACAO =>
 				if comando = '1' 
 					and botao = true 
-					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+--					and abertura_fechamento_cancela_1 = '0' 
+--					and abertura_fechamento_cancela_2 = '0' 
 				then
 					new_state <= ENTRADA;
 				else
@@ -210,12 +210,16 @@ process(state)
   begin
   		case state is
 			when ENTRADA =>
+				valor_multa     <= x"00000000";
+				numero_controle <= x"0000000000000000";
 				cancela_1  <= '1';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
 			
 			when POSICIONAMENTO =>
+				valor_multa     <= x"00000000";
+				numero_controle <= x"0000000000000000";
 				cancela_1  <= '0';
 				semaforo_1 <= '1';
 				cancela_2  <= '0';
@@ -232,35 +236,32 @@ process(state)
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-
+	
 			when CALCULO_MULTA =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-				m <= p1 * p2;
-
+				valor_multa <= tmp_valor_multa;
 			when EMISSAO_DOCUMENTO =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-
+				-- adicionar concatenação do número do documento
 			when SAIDA =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '1';
 				semaforo_2 <= '0';
-
+				
 			when REINICIALIZACAO =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '1';
-
+				valor_multa <= x"00000000";
 		end case;
 		
-		valor_multa   <= m;
-
 end process;
 end arch;
