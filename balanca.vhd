@@ -1,6 +1,8 @@
 library ieee;
-use ieee.std_logic_1164.all;
-use IEEE.std_logic_arith .all;
+use IEEE.STD_LOGIC_1164.all;
+USE ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+use IEEE.MATH_REAL.ALL;
 
 entity balanca is
     generic (
@@ -9,23 +11,21 @@ entity balanca is
     port (
         clock         : in  std_logic;
         comando 		 : in  std_logic;
-
         id   				 : in    std_logic_vector(2 * W_16 - 1 downto 0);
-        peso   			 : in    std_logic_vector(W_16 - 1 downto 0);
-        peso_permitido   : in    std_logic_vector(W_16 - 1 downto 0);
-		  valor_por_kg_excedente  : in std_logic_vector(W_16 - 1 downto 0);
-		  
+        peso   			 : in    unsigned(W_16 - 1 downto 0);
+        peso_permitido   : in    unsigned(W_16 - 1 downto 0);
+		  valor_por_kg_excedente  : in unsigned(W_16 - 1 downto 0);
         abertura_fechamento_cancela_1 : in  std_logic;
         abertura_fechamento_cancela_2 : in  std_logic;
-
-        valor_multa      : out std_logic_vector(2 * W_16 - 1 downto 0);
+        valor_multa      : out unsigned(2 * W_16 - 1 downto 0);
         numero_controle  : out std_logic_vector(4 * W_16 - 1 downto 0);
         semaforo_1 		 : out std_logic;
         semaforo_2 		 : out std_logic;
         cancela_1  		 : out std_logic;
-        cancela_2  		 : out std_logic
+        cancela_2  		 : out std_logic;
 
     );
+
 end balanca;
 
 architecture arch of balanca is
@@ -43,23 +43,23 @@ architecture arch of balanca is
 	
 	component comparador is
 	port (
-      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+      A,B    : in  unsigned(W_16 - 1  downto 0); 
       Output : out std_logic
 	);
 	end component;
 	
 	component subtrator is
 	port (
-      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
+      A,B    : in  unsigned(W_16 - 1  downto 0); 
 		add_sub : in std_logic;
-      Output : out std_logic_vector(W_16 - 1  downto 0)
+      Output : out unsigned(W_16 - 1  downto 0)
 	);
 	end component;
 	
 	component multiplicador is
 	port (
-      A,B    : in  std_logic_vector(W_16 - 1  downto 0); 
-      Output : out std_logic_vector(2* W_16 - 1  downto 0)
+      A,B    : in  unsigned(W_16 - 1  downto 0); 
+      Output : out unsigned(2* W_16 - 1  downto 0)
 	);
 	end component;
 
@@ -67,12 +67,12 @@ architecture arch of balanca is
 	signal new_state		: state_type;
 	signal botao 			: boolean;
 	signal aplicar_multa : std_logic;
-	signal tmp_peso_excedente : std_logic_vector(W_16 - 1  downto 0);
-	signal tmp_valor_multa    : std_logic_vector(2 * W_16 - 1  downto 0);
+	signal tmp_peso_excedente : unsigned(W_16 - 1  downto 0);
+	signal tmp_valor_multa    : unsigned(2 * W_16 - 1  downto 0);
 	
-	signal p1 : signed(W_16 - 1 downto 0);
-   signal p2 : signed(W_16 - 1 downto 0);
-   signal m  : signed(2 * W_16 - 1 downto 0);
+	signal p1 : unsigned(W_16 - 1 downto 0);
+   signal p2 : unsigned(W_16 - 1 downto 0);
+   signal m  : unsigned(2 * W_16 - 1 downto 0);
 
 	
 begin
@@ -260,7 +260,7 @@ process(state)
 
 		end case;
 		
-		valor_multa   <= std_logic_vector(m);
+		valor_multa   <= m;
 
 end process;
 end arch;

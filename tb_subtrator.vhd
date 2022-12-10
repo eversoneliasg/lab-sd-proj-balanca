@@ -1,6 +1,8 @@
 library ieee;
-use ieee.std_logic_1164.all;
+use IEEE.STD_LOGIC_1164.all;
+USE ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
+use IEEE.MATH_REAL.ALL;
 
 entity tb_subtrator is
 generic

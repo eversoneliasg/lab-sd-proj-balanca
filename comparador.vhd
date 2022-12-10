@@ -1,16 +1,16 @@
 library IEEE;
-
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.STD_LOGIC_1164.all;
+USE ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+use IEEE.MATH_REAL.ALL;
 
 entity comparador is
 	generic(
 			DATA_WIDTH : natural := 16
 	);
    port (  
-		A : in std_logic_vector((DATA_WIDTH-1) downto 0);
-      B : in std_logic_vector((DATA_WIDTH-1) downto 0);
+		A : in unsigned((DATA_WIDTH-1) downto 0);
+      B : in unsigned((DATA_WIDTH-1) downto 0);
       output : out std_logic -- greater, equal, smaller  : out std_logic
     ); -- output:OUT STD_LOGIC_VECTOR(3 downto 0)
 end comparador;
