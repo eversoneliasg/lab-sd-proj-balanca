@@ -89,13 +89,11 @@ begin
 end process;
 
 abertura_fechamento_cancela_1 <= '0', '1' after 200 ns;
+abertura_fechamento_cancela_2 <= '0';
 
--- COMANDO <= '0', '1' after 3 ns, '0' after 23 ns, '1' after 33 ns, '0' after 53 ns, '1' after 83 ns, '0' after 113 ns, '1' after 133 ns, '0' after 163 ns, '1' after 173 ns, '0' after 183 ns, '1' after 188 ns, '0' after 192 ns, '1' after 193 ns;
+id   				 <= x"f0fffffe";
+peso 				 <= x"00ff";
+peso_permitido  <= x"000f";
+valor_por_kg_excedente <= x"ff5f";
 
-
-
--- A <= '1';
--- B <= '0';
--- C <= '1';
--- D <= '0';
 end teste;
