@@ -1,8 +1,9 @@
 library IEEE;
 
-use IEEE.std_logic_1164.ALL;
-use IEEE.std_logic_ARITH.ALL;
-use IEEE.std_logic_UNSIGNED.ALL;
+use IEEE.STD_LOGIC_1164.all;
+USE ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+use IEEE.MATH_REAL.ALL;
 
 ENTITY tb_comparador IS
 generic(
@@ -13,14 +14,14 @@ END tb_comparador;
 ARCHITECTURE teste OF tb_comparador IS
    COMPONENT comparador IS
    port(   
-		A : in std_logic_vector((W_16-1) downto 0);
-      B : in std_logic_vector((W_16-1) downto 0);
+		A : in unsigned((W_16-1) downto 0);
+      B : in unsigned((W_16-1) downto 0);
       output : out std_logic
    );
    END COMPONENT;
 
-   SIGNAL a : std_logic_vector((W_16-1) downto 0);
-   SIGNAL b : std_logic_vector((W_16-1) downto 0);
+   SIGNAL a : unsigned((W_16-1) downto 0);
+   SIGNAL b : unsigned((W_16-1) downto 0);
    SIGNAL c : std_logic;
 
 BEGIN
