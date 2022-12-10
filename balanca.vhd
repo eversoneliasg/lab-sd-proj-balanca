@@ -70,9 +70,9 @@ architecture arch of balanca is
 	signal tmp_peso_excedente : unsigned(W_16 - 1  downto 0);
 	signal tmp_valor_multa    : unsigned(2 * W_16 - 1  downto 0);
 	
-	signal p1 : unsigned(W_16 - 1 downto 0);
-   signal p2 : unsigned(W_16 - 1 downto 0);
-   signal m  : unsigned(2 * W_16 - 1 downto 0);
+--	signal p1 : unsigned(W_16 - 1 downto 0);
+--   signal p2 : unsigned(W_16 - 1 downto 0);
+--   signal m  : unsigned(2 * W_16 - 1 downto 0);
 
 	
 begin
@@ -236,32 +236,32 @@ process(state)
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-
+	
 			when CALCULO_MULTA =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-
+				valor_multa <= tmp_valor_multa;
 			when EMISSAO_DOCUMENTO =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-
+				-- adicionar concatenação do número do documento
 			when SAIDA =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '1';
 				semaforo_2 <= '0';
-
+				
 			when REINICIALIZACAO =>
 				cancela_1  <= '0';
 				semaforo_1 <= '0';
 				cancela_2  <= '0';
 				semaforo_2 <= '1';
-
+				valor_multa <= x"00000000";
 		end case;
-
+		
 end process;
 end arch;

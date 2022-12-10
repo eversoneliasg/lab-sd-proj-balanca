@@ -1,6 +1,3 @@
--- Quartus Prime VHDL Template
--- Unsigned Multiply
-
 library ieee;
 use IEEE.STD_LOGIC_1164.all;
 USE ieee.std_logic_unsigned.all;

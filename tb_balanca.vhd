@@ -91,9 +91,9 @@ end process;
 abertura_fechamento_cancela_1 <= '0', '1' after 200 ns;
 abertura_fechamento_cancela_2 <= '0';
 
-id   				 <= x"f0fffffe";
+id   				 <= x"00dfafbe";
 peso 				 <= x"00ff";
 peso_permitido  <= x"000f";
-valor_por_kg_excedente <= x"ff5f";
+valor_por_kg_excedente <= x"00f0";
 
 end teste;
