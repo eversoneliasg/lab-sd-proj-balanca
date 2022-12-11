@@ -88,8 +88,24 @@ begin
     end loop;
 end process;
 
-abertura_fechamento_cancela_1 <= '0', '1' after 200 ns;
-abertura_fechamento_cancela_2 <= '0';
+abertura_fechamento_cancela_1 <= '0', '1' after 500 ns, '0' after 750 ns, '0' after 1500 ns, '0' after 2000 ns;
+abertura_fechamento_cancela_2 <= '1', '0' after 500 ns, '0' after 750 ns, '1' after 1500 ns, '0' after 2000 ns;
+
+-- process
+-- begin
+-- 	abertura_fechamento_cancela_1 <= '0';
+-- 	if (cancela_1 = '1') 
+-- 	then
+-- 		abertura_fechamento_cancela_1 <= not abertura_fechamento_cancela_1 after 50 ns;
+-- 	end if;
+-- 
+-- 	abertura_fechamento_cancela_2 <= '1';
+-- 	if (cancela_2 = '1') 
+-- 	then
+-- 		abertura_fechamento_cancela_2 <= not abertura_fechamento_cancela_2 after 50 ns;
+-- 	end if;
+-- end process;
+
 
 id   				 <= x"00dfafbe";
 peso 				 <= x"00ff";
