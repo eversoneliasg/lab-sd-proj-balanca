@@ -49,7 +49,6 @@ signal semaforo_2 		: std_logic;
 signal cancela_1  		: std_logic;
 signal cancela_2  		: std_logic;
 
-
 begin
 
 instancia_balanca: balanca port map(
@@ -88,28 +87,14 @@ begin
     end loop;
 end process;
 
-abertura_fechamento_cancela_1 <= '0', '1' after 500 ns, '0' after 750 ns, '0' after 1500 ns, '0' after 2000 ns;
-abertura_fechamento_cancela_2 <= '1', '0' after 500 ns, '0' after 750 ns, '1' after 1500 ns, '0' after 2000 ns;
+-- Caso em que há multa
+abertura_fechamento_cancela_1 <= '0', '1' after 500 ns, '0' after 1250 ns, '0' after 1750 ns, '0' after 2250 ns, '1' after 3250 ns, '0' after 3500 ns, '0' after 4250 ns, '0' after 4750 ns;
+abertura_fechamento_cancela_2 <= '1', '0' after 500 ns, '0' after 1000 ns, '1' after 1750 ns, '1' after 2500 ns, '0' after 3250 ns, '0' after 3500 ns, '1' after 4000 ns, '0' after 4500 ns;
 
--- process
--- begin
--- 	abertura_fechamento_cancela_1 <= '0';
--- 	if (cancela_1 = '1') 
--- 	then
--- 		abertura_fechamento_cancela_1 <= not abertura_fechamento_cancela_1 after 50 ns;
--- 	end if;
--- 
--- 	abertura_fechamento_cancela_2 <= '1';
--- 	if (cancela_2 = '1') 
--- 	then
--- 		abertura_fechamento_cancela_2 <= not abertura_fechamento_cancela_2 after 50 ns;
--- 	end if;
--- end process;
+id   				 <=        x"00dfafbe", x"00dfafbf" after 2500 ns;
+peso 				 <=        x"fde8",     x"ea60" after 2500 ns;
+peso_permitido  <=        x"cf08",     x"ffdc" after 2500 ns;
+valor_por_kg_excedente <= x"000d",     x"000d" after 2500 ns;
 
-
-id   				 <= x"00dfafbe";
-peso 				 <= x"00ff";
-peso_permitido  <= x"000f";
-valor_por_kg_excedente <= x"00f0";
 
 end teste;
