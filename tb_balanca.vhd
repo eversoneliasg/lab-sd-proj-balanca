@@ -88,13 +88,13 @@ begin
 end process;
 
 -- Caso em que há multa
-abertura_fechamento_cancela_1 <= '0', '1' after 500 ns, '0' after 1250 ns, '0' after 1750 ns, '0' after 2250 ns, '1' after 3250 ns, '0' after 3500 ns, '0' after 4250 ns, '0' after 4750 ns;
-abertura_fechamento_cancela_2 <= '1', '0' after 500 ns, '0' after 1000 ns, '1' after 1750 ns, '1' after 2500 ns, '0' after 3250 ns, '0' after 3500 ns, '1' after 4000 ns, '0' after 4500 ns;
+abertura_fechamento_cancela_1 <= '0', '1' after 500 ns, '0' after 1250 ns, '0' after 1750 ns, '0' after 2250 ns, '1' after 3250 ns, '0' after 3750 ns, '0' after 4250 ns, '0' after 4750 ns, '1' after 5500 ns, '0' after 6250 ns, '0' after 6750 ns, '0' after 7250 ns, '1' after 8250 ns, '0' after 8750 ns, '0' after 9250 ns, '0' after 9750 ns;
+abertura_fechamento_cancela_2 <= '1', '0' after 500 ns, '0' after 1000 ns, '1' after 1750 ns, '1' after 2500 ns, '0' after 3250 ns, '0' after 3750 ns, '1' after 4000 ns, '0' after 4500 ns, '0' after 5500 ns, '0' after 6000 ns, '1' after 6750 ns, '1' after 7500 ns, '0' after 8250 ns, '0' after 8750 ns, '1' after 9000 ns, '0' after 9500 ns;
 
-id   				 <=        x"00dfafbe", x"00dfafbf" after 2500 ns;
-peso 				 <=        x"fde8",     x"ea60" after 2500 ns;
-peso_permitido  <=        x"cf08",     x"ffdc" after 2500 ns;
-valor_por_kg_excedente <= x"000d",     x"000d" after 2500 ns;
+id   				 <=        x"00dfafbe", x"00dfafbf" after 2500 ns, x"00dfafc0" after 5000 ns;
+peso 				 <=        x"fde8",     x"ea60" after 2500 ns, 		x"fde9" after 5000 ns;
+peso_permitido  <=        x"cf08",     x"ffdc" after 2500 ns, 		x"cf09" after 5000 ns;
+valor_por_kg_excedente <= x"000d",     x"000d" after 2500 ns,		x"000e" after 5000 ns;
 
 
 end teste;
