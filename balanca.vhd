@@ -192,7 +192,7 @@ process(comando,state)
 				if comando = '1' 
 					and botao = true 
 					and abertura_fechamento_cancela_1 = '0' 
-					and abertura_fechamento_cancela_2 = '0' 
+					and abertura_fechamento_cancela_2 = '1' 
 				then
 					new_state <= ENTRADA;
 				else
@@ -210,7 +210,6 @@ process(state)
 				semaforo_1 <= '0';
 				cancela_2  <= '1';
 				semaforo_2 <= '0';
-				report "entrada";
 			
 			when POSICIONAMENTO =>
 				-- A cancela 1 deve se manter aberta e o semáforo 1 deve se abrir para permitir a entrada do veículo
@@ -218,7 +217,7 @@ process(state)
 				semaforo_1 <= '1';
 				cancela_2  <= '0';
 				semaforo_2 <= '0';
-				report "posicionamento";
+				
 			when PESAGEM =>
 				-- A cancela 1 e 2 devem ser mantidas fechadas e os semáforos também 
 				cancela_1  <= '1';
